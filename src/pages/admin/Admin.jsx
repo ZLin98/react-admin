@@ -26,7 +26,7 @@ class Admin extends React.Component {
         </Sider>
         <Layout>
           <Header>Header</Header>
-          <Content style={{ backgroundColor: "white" }}>
+          <Content style={{ margin: 20, backgroundColor: "white" }}>
             <Switch>
               <Route path='/home' component={Home} />
               <Route path='/category' component={Category} />

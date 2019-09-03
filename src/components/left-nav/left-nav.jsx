@@ -4,7 +4,6 @@ import './left-nav.less'
 import logo from "../../assets/images/logo.png"
 import { Menu, Icon } from 'antd';
 import menuList from "../../config/menuConfig"
-import Item from 'antd/lib/list/Item';
 
 const { SubMenu } = Menu;
 
@@ -68,7 +67,7 @@ class LeftNav extends Component {
                 </Menu.Item>));
             } else {
                 //获取每次打开子菜单的菜单项
-                const cItem = item.children.find(cItem => cItem.key == path)
+                const cItem = item.children.find(cItem => cItem.key === path)
                 //保存打开的子菜单，如果有子菜单打开，再次刷新就打开菜单
                 if(cItem) {
                     this.openKey = item.key;

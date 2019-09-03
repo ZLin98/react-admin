@@ -20,6 +20,6 @@ export default {
      */
     removeUser() {
         // localStorage.removeItem(USER_KRY);
-        store.remover(USER_KRY);
+        store.remove(USER_KRY);
     }
 }
