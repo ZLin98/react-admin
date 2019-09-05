@@ -10,11 +10,14 @@ import {message} from "antd"
  */
 export default function ajax(url, data = {}, method = 'GET') {
 
+    // axios.defaults.headers = {
+    //     'Content-type': 'application/x-www-form-urlencoded'
+    // }
     return new Promise((resolve,reject) => {
         let promise;
         if (method === 'GET') {
             promise = axios.get(url, 
-                { params: data }//配置参数params
+                { params: data },//配置参数params
             );
         } else {
             promise = axios.post(url,data);

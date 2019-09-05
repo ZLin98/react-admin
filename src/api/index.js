@@ -9,7 +9,25 @@ import {
 export const reqLogin = (username, password) => ajax("/login", {
     username,
     password
-}, "POST")
+}, "POST");
+
+//获取分类列表
+export const reqGetCategoryList = (parentId) => ajax('/manage/category/list', {
+    parentId
+});
+//添加分类
+export const reqAddCategory = (categoryName, parentId) => ajax('/manage/category/add', {
+    categoryName,
+    parentId
+}, 'POST');
+//更新分类
+export const reqUpdateCategory = ({
+    categoryId,
+    categoryName
+}) => ajax('/manage/category/update', {
+    categoryId,
+    categoryName
+}, 'POST');
 
 //jsonp 请求获取天气信息
 export const reqWeather = (city) => {
@@ -23,7 +41,11 @@ export const reqWeather = (city) => {
                     weather,
                     temperature
                 } = data.results[0].weather_data[0];
-                resovle({dayPictureUrl, weather, temperature});
+                resovle({
+                    dayPictureUrl,
+                    weather,
+                    temperature
+                });
             } else {
                 message.error("获取天气信息失败")
             }
