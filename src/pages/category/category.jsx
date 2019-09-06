@@ -73,9 +73,12 @@ export default class Category extends Component {
             }
         );
     }
-    getCategoryList = async () => {
+    /**
+     * parentId 可以传可以不传，不传默认为状态里面的ID
+     */
+    getCategoryList = async (parentId) => {
         this.setState({ loading: true });
-        const { parentId } = this.state;
+        parentId = parentId || this.state.parentId;
         const result = await reqGetCategoryList(parentId);
         this.setState({ loading: false });
         if (result.status === 0) {
@@ -112,43 +115,60 @@ export default class Category extends Component {
         });
     };
 
-    addCategory = async () => {
-        //隐藏modal
-        this.setState({
-            showStatus: 0
+    addCategory = () => {
+
+        //只有表单验证通过才可以发请求进行修改
+        this.form.validateFields(async (err, values) => {
+            if (!err) {
+                //隐藏modal
+                this.setState({
+                    showStatus: 0
+                })
+                //准备数据
+                const { categoryName, parentId } = values;
+                //清除输入数据
+                this.form.resetFields();
+                //发请求修改
+                const result = await reqAddCategory(categoryName, parentId);
+                if (result.status === 0) {
+                    //重新显示列表
+                    this.getCategoryList();
+                } else {
+                    message.error(result.msg)
+                }
+            }
         })
-        //准备数据
-        const {categoryName,parentId} = this.form.getFieldsValue();
-        //清除输入数据
-        this.form.resetFields();
-        //发请求修改
-        const result = await reqAddCategory(categoryName,parentId);
-        if (result.status === 0) {
-            //重新显示列表
-            this.getCategoryList();
-        } else {
-            message.error(result.msg)
-        }
     }
 
-    updateCategory = async () => {
-        //隐藏modal
-        this.setState({
-            showStatus: 0
+    updateCategory = () => {
+        //只有表单验证通过才可以发请求进行修改
+        this.form.validateFields(async (err, values) => {
+            if (!err) {
+                //隐藏modal
+                this.setState({
+                    showStatus: 0
+                })
+                //准备数据
+                const categoryId = this.category._id;
+                const { categoryName } = values;
+                //清除输入数据
+                this.form.resetFields();
+                //发请求修改
+                const result = await reqUpdateCategory({ categoryId, categoryName });
+                if (result.status === 0) {
+
+                    if (categoryId === this.state.parentId) {
+                        //重新获取当前的分类列表
+                        this.getCategoryList();
+                    } else if (categoryId === "0") {
+                        this.getCategoryList("0");
+                    }
+                } else {
+                    message.error(result.msg)
+                }
+            }
         })
-        //准备数据
-        const categoryId = this.category._id;
-        const categoryName = this.form.getFieldValue("categoryName");
-        //清除输入数据
-        this.form.resetFields();
-        //发请求修改
-        const result = await reqUpdateCategory({ categoryId, categoryName });
-        if (result.status === 0) {
-            //重新显示列表
-            this.getCategoryList();
-        } else {
-            message.error(result.msg)
-        }
+
     }
     render() {
         const { categoryList, loading, parentId, subCategoryList, parentName, showStatus } = this.state;
@@ -185,7 +205,7 @@ export default class Category extends Component {
                 >
                     <AddForm categoryList={categoryList} parentId={parentId} setForm={(form) => {
                         this.form = form;
-                    }}/>
+                    }} />
                 </Modal>
                 <Modal
                     title="修改分类"

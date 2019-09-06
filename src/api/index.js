@@ -28,6 +28,14 @@ export const reqUpdateCategory = ({
     categoryId,
     categoryName
 }, 'POST');
+//获取商品列表
+export const reqProduct = (
+    pageNum,
+    pageSize
+) => ajax('/manage/product/list', {
+    pageNum,
+    pageSize
+});
 
 //jsonp 请求获取天气信息
 export const reqWeather = (city) => {
