@@ -37,6 +37,12 @@ export const reqProduct = (
     pageSize
 });
 
+//根据（商品名称或者商品描述）搜索商品信息
+export const reqSearchProduct = ({pageNum, pageSize, searchValue, searchType}) => 
+ajax('/manage/product/search',{pageNum,pageSize,[searchType]:searchValue}); 
+ 
+
+
 //jsonp 请求获取天气信息
 export const reqWeather = (city) => {
     const url = `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p49MVra6urFRGOT9s8UBWr2`
