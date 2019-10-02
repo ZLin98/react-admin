@@ -28,6 +28,9 @@ export const reqUpdateCategory = ({
     categoryId,
     categoryName
 }, 'POST');
+
+//获取一个分类
+export const reqGetCategoryNameForId = (id => ajax("/manage/category/info",{categoryId:id},"GET"))
 //获取商品列表
 export const reqProduct = (
     pageNum,
@@ -41,7 +44,9 @@ export const reqProduct = (
 export const reqSearchProduct = ({pageNum, pageSize, searchValue, searchType}) => 
 ajax('/manage/product/search',{pageNum,pageSize,[searchType]:searchValue}); 
  
+//修改商品状态
 
+export const reqUpdateProductStatus = ((productId,status) => ajax("/manage/product/updateStatus",{productId,status},"POST"))
 
 //jsonp 请求获取天气信息
 export const reqWeather = (city) => {

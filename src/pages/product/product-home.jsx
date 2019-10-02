@@ -1,21 +1,26 @@
 import React, { Component } from 'react'
-import { Card, Select, Icon, Button, Table, Input } from "antd"
+import { Card, Select, Icon, Button, Table, Input, message } from "antd"
 import LinkButton from "../../components/link-botton/linkBotton"
-import {reqProduct, reqSearchProduct} from "../../api/index"
-import {PAGE_SIZE} from "../../utils/constants"
+import { reqProduct, reqSearchProduct, reqUpdateProductStatus } from "../../api/index"
+import { PAGE_SIZE } from "../../utils/constants"
 
 const Option = Select.Option;
 export default class ProductHome extends Component {
 
 
     state = {
-        total:0,
-        loading:false,
+        total: 0,
+        loading: false,
         products: [],
-        searchValue:"",
-        searchType:"productName"
+        searchValue: "",
+        searchType: "productName"
     }
-
+    updateProductStatus = (productId,status) => {
+       const result =  reqUpdateProductStatus(productId,status);
+       if (result.status === 0) {
+        message.success("更新商品状态成功");
+       }
+    }
     initColumns = () => {
         this.columns = [
             {
@@ -32,28 +37,26 @@ export default class ProductHome extends Component {
                 render: (price) => "￥" + price
             },
             {
-                width:100,
+                width: 100,
                 title: '状态',
-                dataIndex: 'status',
-                render: (status) => status === 1 ?
-                    (<div>
-                        <Button type="primary">下架
+                // dataIndex: 'status',
+                render: (product) => {
+                    const { status, _id } = product;
+                    return (<span>
+                        <Button type="primary" onClick={() => this.updateProductStatus(_id, status === 1 ? 2 : 1)}>{status === 1 ? "下架" : "上架"}
                         </Button>
-                        <span>在售</span>
-                    </div>) :
-                    (<div>
-                        <Button type="primary">上架
-                            </Button>
-                        <span>已下架</span>
-                    </div>)
+                        <span>{status === 1 ? "在售" : "已下架"}</span>
+                    </span>)
+                }
+
             },
             {
                 title: '操作',
                 width: 100,
                 dataIndex: '',
-                render: () => (
+                render: (product) => (
                     <span>
-                        <LinkButton >详情</LinkButton>
+                        <LinkButton onClick={() => this.props.history.push("/product/detail", { product })}>详情</LinkButton>
                         <LinkButton >修改</LinkButton>
                     </span>
                 )
@@ -72,24 +75,24 @@ export default class ProductHome extends Component {
 
 
     getProductList = async (pNo) => {
-        const pageNum = pNo||1;
-        this.setState({loading:true});
-        const {searchType, searchValue} =this.state;
+        const pageNum = pNo || 1;
+        this.setState({ loading: true });
+        const { searchType, searchValue } = this.state;
         let result;
         if (searchValue) {
-            result = await reqSearchProduct({pageNum,pageSize:PAGE_SIZE,searchValue,searchType})
+            result = await reqSearchProduct({ pageNum, pageSize: PAGE_SIZE, searchValue, searchType })
             console.log(result);
-            
+
         } else {
-            result = await reqProduct(pageNum,PAGE_SIZE);
+            result = await reqProduct(pageNum, PAGE_SIZE);
         }
-        this.setState({loading:false});
+        this.setState({ loading: false });
         if (result && result.status === 0) {
-            const {total, list} = result.data;
-            console.log("resule.data",list)
+            const { total, list } = result.data;
+            console.log("resule.data", list)
             this.setState({
                 total,
-                products:list
+                products: list
             })
         }
     }
@@ -97,11 +100,11 @@ export default class ProductHome extends Component {
         const { products, total, loading, searchType, searchValue } = this.state;
         const title = (
             <span>
-                <Select value={searchType} style={{ width: 120 }} onChange={value => this.setState({searchType:value})}>
+                <Select value={searchType} style={{ width: 120 }} onChange={value => this.setState({ searchType: value })}>
                     <Option value="productName">按名称搜索</Option>
                     <Option value="productDesc">按描述搜索</Option>
                 </Select>
-                <Input placeholder="关键词" style={{ width: 150, margin: "0 15px" }} onChange={event => this.setState({searchValue:event.target.value})} value={searchValue}></Input>
+                <Input placeholder="关键词" style={{ width: 150, margin: "0 15px" }} onChange={event => this.setState({ searchValue: event.target.value })} value={searchValue}></Input>
                 <Button type="primary" onClick={() => this.getProductList(1)}>搜索</Button>
             </span>
 
@@ -114,17 +117,17 @@ export default class ProductHome extends Component {
         );
         return (
             <Card title={title} extra={extra}>
-                <Table bordered 
-                loading={loading}
-                dataSource={products}   
-                columns={this.columns} 
-                rowKey="_id" 
-                pagination={{
-                    defaultPageSize:PAGE_SIZE,
-                    showQuickJumper:true,
-                    total:total,
-                    onChange:this.getProductList
-                }}
+                <Table bordered
+                    loading={loading}
+                    dataSource={products}
+                    columns={this.columns}
+                    rowKey="_id"
+                    pagination={{
+                        defaultPageSize: PAGE_SIZE,
+                        showQuickJumper: true,
+                        total: total,
+                        onChange: this.getProductList
+                    }}
                 />
             </Card>
         )
