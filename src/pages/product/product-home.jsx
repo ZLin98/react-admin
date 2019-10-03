@@ -19,6 +19,7 @@ export default class ProductHome extends Component {
        const result =  reqUpdateProductStatus(productId,status);
        if (result.status === 0) {
         message.success("更新商品状态成功");
+        this.getProductList(this.pNo);
        }
     }
     initColumns = () => {
@@ -57,7 +58,7 @@ export default class ProductHome extends Component {
                 render: (product) => (
                     <span>
                         <LinkButton onClick={() => this.props.history.push("/product/detail", { product })}>详情</LinkButton>
-                        <LinkButton >修改</LinkButton>
+                        <LinkButton onClick={() => this.props.history.push("/product/addupdate",{product})} >修改</LinkButton>
                     </span>
                 )
 
@@ -74,17 +75,17 @@ export default class ProductHome extends Component {
     }
 
 
-    getProductList = async (pNo) => {
-        const pageNum = pNo || 1;
+    getProductList = async (pageNum) => {
+        this.pNo = pageNum || 1;
         this.setState({ loading: true });
         const { searchType, searchValue } = this.state;
         let result;
         if (searchValue) {
-            result = await reqSearchProduct({ pageNum, pageSize: PAGE_SIZE, searchValue, searchType })
+            result = await reqSearchProduct({ pageNum:(pageNum||1), pageSize: PAGE_SIZE, searchValue, searchType })
             console.log(result);
 
         } else {
-            result = await reqProduct(pageNum, PAGE_SIZE);
+            result = await reqProduct(pageNum||1, PAGE_SIZE);
         }
         this.setState({ loading: false });
         if (result && result.status === 0) {
@@ -110,7 +111,7 @@ export default class ProductHome extends Component {
 
         );
         const extra = (
-            <Button type="primary">
+            <Button type="primary" onClick={() => this.props.history.push("/product/addupdate") }>
                 <Icon type="plus"></Icon>
                 添加商品
             </Button>

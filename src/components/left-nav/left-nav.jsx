@@ -67,7 +67,7 @@ class LeftNav extends Component {
                 </Menu.Item>));
             } else {
                 //获取每次打开子菜单的菜单项
-                const cItem = item.children.find(cItem => cItem.key === path)
+                const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0)
                 //保存打开的子菜单，如果有子菜单打开，再次刷新就打开菜单
                 if(cItem) {
                     this.openKey = item.key;
@@ -91,7 +91,10 @@ class LeftNav extends Component {
     }
     render() {
         //得到当前请求的路由地址
-        const path = this.props.location.pathname;
+        let path = this.props.location.pathname;
+        if (path.indexOf("/product") === 0) {
+            path = "/product";
+        }
         return (
             <div className="left-nav">
                 <Link to="/" className="left-nav-header">

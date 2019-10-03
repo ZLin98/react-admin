@@ -45,8 +45,9 @@ export const reqSearchProduct = ({pageNum, pageSize, searchValue, searchType}) =
 ajax('/manage/product/search',{pageNum,pageSize,[searchType]:searchValue}); 
  
 //修改商品状态
-
 export const reqUpdateProductStatus = ((productId,status) => ajax("/manage/product/updateStatus",{productId,status},"POST"))
+
+export const reqDeleteImage = (name) => ajax("/manage/img/deltet",{name},"POST")
 
 //jsonp 请求获取天气信息
 export const reqWeather = (city) => {
