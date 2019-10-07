@@ -46,8 +46,12 @@ ajax('/manage/product/search',{pageNum,pageSize,[searchType]:searchValue});
  
 //修改商品状态
 export const reqUpdateProductStatus = ((productId,status) => ajax("/manage/product/updateStatus",{productId,status},"POST"))
-
+//删除图片
 export const reqDeleteImage = (name) => ajax("/manage/img/deltet",{name},"POST")
+
+//添加或者更新商品商品
+export const reqAddOrUpdateProduct = (product) => ajax("/manage/product/" + (product._id?"update":"add"),product,"POST")
+
 
 //jsonp 请求获取天气信息
 export const reqWeather = (city) => {

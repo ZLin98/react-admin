@@ -22,7 +22,7 @@ class PicturesWall extends React.Component {
     constructor(props) {
         super(props);
         //初始化状态
-        const {imgs} = this.porps;
+        const {imgs} = props;
         let fileList = [];
         if(imgs && imgs.length > 0) {
             fileList = imgs.map((img,index) => ({
